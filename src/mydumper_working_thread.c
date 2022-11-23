@@ -368,7 +368,6 @@ void free_table_job(struct table_job *tj){
     m_close(tj->sql_file);
     tj->sql_file=NULL;
   }
-  g_free(tj->filename);
   g_free(tj);
 }
 
