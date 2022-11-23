@@ -368,6 +368,7 @@ void free_table_job(struct table_job *tj){
     m_close(tj->sql_file);
     tj->sql_file=NULL;
   }
+  g_free(tj->sql_filename);
   g_free(tj);
 }
 
@@ -409,7 +410,6 @@ void thd_JOB_DUMP_DATABASE(struct thread_data *td, struct job *job){
   g_message("Thread %d dumping db information for `%s`", td->thread_id,
             ddj->database->name);
   dump_database_thread(td->thrconn, td->conf, ddj->database);
-  g_free(ddj->database);
   g_free(ddj);
   g_free(job);
   if (g_atomic_int_dec_and_test(&database_counter)) {
@@ -855,6 +855,8 @@ gboolean process_job(struct thread_data *td, struct job *job){
     switch (job->type) {
     case JOB_DETERMINE_CHUNK_TYPE:
       set_chunk_strategy_for_dbt(td->thrconn, (struct db_table *)(job->job_data));
+      g_free(job->job_data);
+      g_free(job);
       break;
     case JOB_DUMP:
       thd_JOB_DUMP(td, job);
