@@ -1367,12 +1367,10 @@ void free_db_table(struct db_table * dbt){
   g_free(dbt->table);
   g_mutex_free(dbt->rows_lock);
   g_free(dbt->escaped_table);
+  g_free(dbt->field);
   g_string_free(dbt->select_fields, TRUE);
   if (dbt->min!=NULL) g_free(dbt->min);
   if (dbt->max!=NULL) g_free(dbt->max);
-/*  g_free();
-  g_free();
-  g_free();*/
   g_free(dbt);
 }
 

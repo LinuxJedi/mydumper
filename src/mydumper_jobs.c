@@ -734,13 +734,13 @@ void free_view_job(struct view_job *vj){
     g_free(vj->filename);
   if (vj->filename2)
     g_free(vj->filename2);
-//  g_free(vj);
+  g_free(vj);
 }
 
 void free_schema_post_job(struct schema_post_job *sp){
   if (sp->filename)
     g_free(sp->filename);
-//  g_free(sp);
+  g_free(sp);
 }
 void free_create_database_job(struct create_database_job * cdj){
   if (cdj->filename)
@@ -753,15 +753,15 @@ void free_create_database_job(struct create_database_job * cdj){
 void free_create_tablespace_job(struct create_tablespace_job * ctj){
   if (ctj->filename)
     g_free(ctj->filename);
-//  g_free(cdj);
+  g_free(ctj);
 }
 
 void free_table_checksum_job(struct table_checksum_job*tcj){
-      if (tcj->table)
-        g_free(tcj->table);
-      if (tcj->filename)
-        g_free(tcj->filename);
-      g_free(tcj);
+  if (tcj->table)
+    g_free(tcj->table);
+  if (tcj->filename)
+    g_free(tcj->filename);
+  g_free(tcj);
 }
 
 void do_JOB_CREATE_DATABASE(struct thread_data *td, struct job *job){
@@ -1051,9 +1051,7 @@ struct job * create_job_to_dump_chunk_without_enqueuing(struct db_table *dbt, ch
   struct job *j = g_new0(struct job,1);
   struct table_job *tj = new_table_job(dbt, partition, nchunk, order_by, chunk_step, update_where);
   j->job_data=(void*) tj;
-//  j->conf=conf;
   j->type= dbt->is_innodb ? JOB_DUMP : JOB_DUMP_NON_INNODB;
-  j->job_data = (void *)tj;
   return j;
 }
 
@@ -1076,7 +1074,6 @@ void create_job_to_dump_all_databases(struct configuration *conf) {
   g_atomic_int_inc(&database_counter);
   struct job *j = g_new0(struct job, 1);
   j->job_data = NULL;
-//  j->conf = conf;
   j->type = JOB_DUMP_ALL_DATABASES;
   g_async_queue_push(conf->initial_queue, j);
   return;
@@ -1099,7 +1096,6 @@ void create_job_to_dump_database(struct database *database, struct configuration
   struct dump_database_job *ddj = g_new0(struct dump_database_job, 1);
   j->job_data = (void *)ddj;
   ddj->database = database;
-//  j->conf = conf;
   j->type = JOB_DUMP_DATABASE;
   g_async_queue_push(conf->initial_queue, j);
   return;
