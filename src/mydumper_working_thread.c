@@ -368,7 +368,7 @@ void free_table_job(struct table_job *tj){
     m_close(tj->sql_file);
     tj->sql_file=NULL;
   }
-//    g_free(tj->filename);
+  g_free(tj->filename);
   g_free(tj);
 }
 
@@ -410,6 +410,7 @@ void thd_JOB_DUMP_DATABASE(struct thread_data *td, struct job *job){
   g_message("Thread %d dumping db information for `%s`", td->thread_id,
             ddj->database->name);
   dump_database_thread(td->thrconn, td->conf, ddj->database);
+  g_free(ddj->database);
   g_free(ddj);
   g_free(job);
   if (g_atomic_int_dec_and_test(&database_counter)) {
@@ -578,7 +579,7 @@ void thd_JOB_DUMP(struct thread_data *td, struct job *job){
       mysql_query(td->thrconn, "ROLLBACK TO SAVEPOINT mydumper")) {
     g_critical("Rollback to savepoint failed: %s", mysql_error(td->thrconn));
   }
-//  free_table_job(tj);
+  free_table_job(tj);
   g_free(job);
 }
 
